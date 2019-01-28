@@ -1,138 +1,48 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
     "net/http"
-    "os"
-    "io"
-    "fmt"
     "io/ioutil"
-    "bufio"
-    "crypto/md5"
-    "strings"
-    "encoding/hex"
-    "encoding/json"
-
 )
 
-type article struct {
-    Date   string
-    Tag    []string
-    Title  string
-    ID     string
-}
-
-var ListInitStatus = true
-
-//List 获取文章列表
-func List(c *gin.Context) {
-    if (ListInitStatus) {
-        generateList()
+// Article aaa
+func Article(c *gin.Context) {
+	if ListInitStatus {
         ListInitStatus = false
+		list, m := GenerateList()
+		Articles = m
+		ob, error := json.Marshal(&list)
+		if error != nil {
+			fmt.Println(error)
+        }
+		listJSON = string(ob)
+	}
+
+    id := c.Query("id")
+    article := Articles[id]
+
+    if article.Content == "" {
+        articlesPath := WorkPath("articles")
+        path := articlesPath + "/" + id + ".md"
+        content, _ := readFile(path)
+        article.Content = content
     }
-    list := generateList()
-    ob, error := json.Marshal(&list)
-    if error != nil {
-        fmt.Println(error)
-    }
-    c.JSON(http.StatusOK, gin.H{
-        "result": string(ob)})
+
+    j, _ := json.Marshal(&article)
+
+	c.JSON(http.StatusOK, gin.H{
+		"result":   string(j),
+		"errorno":  0,
+		"errormsg": ""})
 }
 
-func generateList() []article{
-    home := os.Getenv("HOME") + "/blog_backend"
-    os.Chdir(home)
-
-    resourcePath := home + "/resource"
-    articlesPath := home + "/articles"
-
-    // create artitles dir.
-    if err:= os.MkdirAll(articlesPath, 0777); err != nil {
-        return nil
-    }
-
-    contents, err := ioutil.ReadDir(resourcePath)
+func readFile(path string) (string, error) {
+    buf, err := ioutil.ReadFile(path)
     if err != nil {
-        return nil
+        return "", err
     }
-
-    var list []article
-
-    for _, content := range contents {
-        name := content.Name()
-        rpath := resourcePath + "/" + name
-
-        _, args, _ := convert(rpath, articlesPath)
-        list = append(list, args)
-    }
-    return list
+    return string(buf), nil
 }
-
-func convert(path, dir string) (*os.File, article, error){
-    var args article
-    ifile, ierror := os.Open(path)
-    if ierror != nil {
-        return nil, args, ierror
-    }
-    defer ifile.Close()
-
-    ireader := bufio.NewReader(ifile)
-
-    parms := strings.Split(path, "/")
-    title := parms[len(parms) - 1]
-    ofile, oerror := os.OpenFile(dir + "/" + MD5(title) + ".md", os.O_CREATE | os.O_RDWR, 0777)
-    if oerror != nil {
-        return nil, args, oerror
-    }
-    defer ofile.Close()
-
-    owriter := bufio.NewWriter(ofile)
-
-    foundTitle := false
-    foundDate := false
-    foundTag := false
-
-
-    args.ID = MD5(title)
-
-    for {
-        istring, error := ireader.ReadString('\n')
-
-        if !foundDate {
-            if strings.HasPrefix(istring, "[date]") {
-                args.Date = istring
-                foundDate = true
-                continue
-            }
-        }
-        if !foundTag {
-            if strings.HasPrefix(istring, "[tag]") {
-                args.Tag = []string{"11"}
-                foundTag = true
-                continue
-            }
-        }
-        if !foundTitle {
-            if strings.HasPrefix(istring, "# ") {
-                args.Title = istring
-                foundTitle = true
-            }
-        }
-
-        owriter.WriteString(istring)
-
-        if error == io.EOF {
-            owriter.Flush()
-            return ofile, args, nil
-        }
-    }
-    return ofile, args, nil
-}
-
-// MD5 md5
-func MD5(text string) string{
-   ctx := md5.New()
-   ctx.Write([]byte(text))
-   return hex.EncodeToString(ctx.Sum(nil))
-}
-
