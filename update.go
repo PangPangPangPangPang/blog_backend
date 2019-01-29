@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"github.com/gin-gonic/gin"
+    "net/http"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -24,6 +26,22 @@ var ListInitStatus = true
 var ListJSON string
 // Articles 文章map
 var Articles map[string]Item
+
+// Update force update article
+func Update(c *gin.Context) {
+    secretkey := c.Param("secretkey")
+    envkey := os.Getenv("BBE_SECRET_KEY")
+    if secretkey == envkey {
+        // update
+        c.JSON(http.StatusOK, gin.H{
+            "name": secretkey})
+        return
+    }
+    c.JSON(http.StatusOK, gin.H{
+		"result": "",
+		"errorno":  1,
+		"errormsg": "error secret key"})
+}
 
 // CheckUpdate 检查文章更新状态并且更新
 func CheckUpdate() {
