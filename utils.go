@@ -1,17 +1,16 @@
 package main
 
 import (
-    "os"
-    "crypto/md5"
-    "encoding/hex"
+	"crypto/md5"
+	"encoding/hex"
+	"os"
 )
 
 // WorkPath generate workpath.
-func WorkPath(file string) string{
+func WorkPath(file string) string {
 	home := os.Getenv("HOME") + "/blog_backend"
-    return home + "/" + file
+	return home + "/" + file
 }
-
 
 // MD5 md5
 func MD5(text string) string {

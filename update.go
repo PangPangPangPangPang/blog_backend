@@ -3,13 +3,13 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
+	"os/exec"
 	"strings"
-	"github.com/gin-gonic/gin"
-    "net/http"
-    "os/exec"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -23,58 +23,60 @@ type Item struct {
 
 // ListInitStatus 检查文章的初始化状态,如果为false,则生成文章列表等并缓存在内存中,如果为true,则从内存取
 var ListInitStatus = true
+
 // ListJSON 生成文章列表后的JSON数据
 var ListJSON string
+
 // Articles 文章map
 var Articles map[string]Item
 
 // Update force update article
 func Update(c *gin.Context) {
-    secretkey := c.Param("secretkey")
-    envkey := os.Getenv("BBE_SECRET_KEY")
-    if secretkey == envkey {
-        // update
-        stdout, err := updateStaticFile()
-        if nil != err {
-            c.JSON(http.StatusOK, gin.H{
-                "result": "",
-                "errorno":  1,
-                "errormsg": "Update failed"})
-            return
-        }
+	secretkey := c.Param("secretkey")
+	envkey := os.Getenv("BBE_SECRET_KEY")
+	if secretkey == envkey {
+		// update
+		stdout, err := updateStaticFile()
+		if nil != err {
+			c.JSON(http.StatusOK, gin.H{
+				"result":   "",
+				"errorno":  1,
+				"errormsg": "Update failed"})
+			return
+		}
 
-        c.JSON(http.StatusOK, gin.H{
-            "result": stdout,
-            "errorno": 0,
-            "errormsg": ""})
-        return
-    }
-    c.JSON(http.StatusOK, gin.H{
-		"result": "",
+		c.JSON(http.StatusOK, gin.H{
+			"result":   stdout,
+			"errorno":  0,
+			"errormsg": ""})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"result":   "",
 		"errorno":  1,
 		"errormsg": "Error secret key"})
 }
 
-func updateStaticFile() (string, error){
-    path := WorkPath("scripts/update_bundle.sh")
-    cmd := exec.Command("/bin/bash", path)
-    stdout, err := cmd.Output()
-    if nil != err {
-        return "", err
-    }
-    return string(stdout), nil
+func updateStaticFile() (string, error) {
+	path := WorkPath("scripts/update_bundle.sh")
+	cmd := exec.Command("/bin/bash", path)
+	stdout, err := cmd.Output()
+	if nil != err {
+		return "", err
+	}
+	return string(stdout), nil
 
 }
 
 // CheckUpdate 检查文章更新状态并且更新
 func CheckUpdate() {
 	if ListInitStatus {
-        ListInitStatus = false
+		ListInitStatus = false
 		list, m := GenerateList()
 		Articles = m
 		ob, error := json.Marshal(&list)
 		if error != nil {
-        }
+		}
 		ListJSON = string(ob)
 	}
 }
@@ -82,7 +84,7 @@ func CheckUpdate() {
 // GenerateList generate article list
 func GenerateList() ([]Item, map[string]Item) {
 	resourcePath := WorkPath("resource")
-    articlesPath := WorkPath("articles")
+	articlesPath := WorkPath("articles")
 
 	// create artitles dir.
 	if err := os.MkdirAll(articlesPath, 0777); err != nil {
@@ -95,7 +97,7 @@ func GenerateList() ([]Item, map[string]Item) {
 	}
 
 	var list []Item
-    var m = make(map[string]Item)
+	var m = make(map[string]Item)
 
 	for _, content := range contents { // 格式化md文件并存在'./'articles文件夹中
 		name := content.Name()
@@ -105,7 +107,7 @@ func GenerateList() ([]Item, map[string]Item) {
 		list = append(list, args)
 
 		id := args.ID
-        m[id] = args
+		m[id] = args
 	}
 	return list, m
 }
@@ -139,7 +141,7 @@ func convert(path, dir string) (*os.File, Item, error) {
 	for {
 		istring, error := ireader.ReadString('\n')
 
-        // 日期
+		// 日期
 		if !foundDate {
 			if strings.HasPrefix(istring, "[date]") {
 				args.Date = istring
@@ -147,7 +149,7 @@ func convert(path, dir string) (*os.File, Item, error) {
 				continue
 			}
 		}
-        // tags
+		// tags
 		if !foundTag {
 			if strings.HasPrefix(istring, "[tag]") {
 				arr := strings.Split(istring, " ")
@@ -156,7 +158,7 @@ func convert(path, dir string) (*os.File, Item, error) {
 				continue
 			}
 		}
-        // 标题
+		// 标题
 		if !foundTitle {
 			if strings.HasPrefix(istring, "# ") {
 				args.Title = istring
