@@ -9,6 +9,7 @@ import (
 	"strings"
 	"github.com/gin-gonic/gin"
     "net/http"
+    "os/exec"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -33,14 +34,36 @@ func Update(c *gin.Context) {
     envkey := os.Getenv("BBE_SECRET_KEY")
     if secretkey == envkey {
         // update
+        stdout, err := updateStaticFile()
+        if nil != err {
+            c.JSON(http.StatusOK, gin.H{
+                "result": "",
+                "errorno":  1,
+                "errormsg": "Update failed"})
+            return
+        }
+
         c.JSON(http.StatusOK, gin.H{
-            "name": secretkey})
+            "result": stdout,
+            "errorno": 0,
+            "errormsg": ""})
         return
     }
     c.JSON(http.StatusOK, gin.H{
 		"result": "",
 		"errorno":  1,
-		"errormsg": "error secret key"})
+		"errormsg": "Error secret key"})
+}
+
+func updateStaticFile() (string, error){
+    path := WorkPath("scripts/update_bundle.sh")
+    cmd := exec.Command("/bin/bash", path)
+    stdout, err := cmd.Output()
+    if nil != err {
+        return "", err
+    }
+    return string(stdout), nil
+
 }
 
 // CheckUpdate 检查文章更新状态并且更新
