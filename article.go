@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
     "net/http"
     "io/ioutil"
@@ -10,16 +9,7 @@ import (
 
 // Article aaa
 func Article(c *gin.Context) {
-	if ListInitStatus {
-        ListInitStatus = false
-		list, m := GenerateList()
-		Articles = m
-		ob, error := json.Marshal(&list)
-		if error != nil {
-			fmt.Println(error)
-        }
-		listJSON = string(ob)
-	}
+    CheckUpdate()
 
     id := c.Query("id")
     article := Articles[id]
