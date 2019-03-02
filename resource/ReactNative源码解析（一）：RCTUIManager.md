@@ -1,5 +1,5 @@
 # ReactNative源码解析（一）：RCTUIManager
-[date] 2017-3-20 17:52:11
+[date] 2017-03-20 17:52:11
 [tag] ReactNative
 ## 主要流程梳理
 ### 初始化
