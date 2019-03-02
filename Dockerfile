@@ -1,10 +1,10 @@
 FROM golang:latest
 
 # 打包是定义密钥用于执行更新
-ENV BBE_SECRET_KEY "abc"
+ENV BBE_SECRET_KEY
 
-WORKDIR $GOPATH/src/blog_backend
-COPY . $GOPATH/src/blog_backend
+WORKDIR /root/blog_backend
+COPY . /root/blog_backend
 
 RUN go get github.com/gin-gonic/gin
 RUN go get github.com/gin-gonic/contrib/static
