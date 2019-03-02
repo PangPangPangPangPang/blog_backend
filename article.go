@@ -5,9 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+    "fmt"
 )
 
-// Article aaa
+// Article 获取文章
 func Article(c *gin.Context) {
 	CheckUpdate()
 
@@ -23,6 +24,7 @@ func Article(c *gin.Context) {
 
 	j, _ := json.Marshal(&article)
 
+    fmt.Println(j)
 	c.JSON(http.StatusOK, gin.H{
 		"result":   string(j),
 		"errorno":  0,

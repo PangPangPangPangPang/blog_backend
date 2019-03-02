@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+    "sort"
+    "time"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -19,6 +21,25 @@ type Item struct {
 	Title   string   `json:"title"`
 	ID      string   `json:"id"`
 	Content string   `json:"content"`
+}
+
+// 实现按照时间排序Item
+type Items []Item
+func (l Items) Less(i, j int) bool {
+    di := l[i].Date
+    dj := l[j].Date
+    format := "2006-01-02 15:04:05"
+    ri, _ := time.Parse(format, di)
+    rj, _ := time.Parse(format, dj)
+    return ri.After(rj)
+}
+
+func (l Items) Swap(i, j int) {
+    l[i], l[j] = l[j], l[i]
+}
+
+func (l Items) Len() int {
+    return len(l)
 }
 
 // ListInitStatus 检查文章的初始化状态,如果为false,则生成文章列表等并缓存在内存中,如果为true,则从内存取
@@ -37,6 +58,8 @@ func Update(c *gin.Context) {
 	if secretkey == envkey {
 		// update
 		stdout, err := updateStaticFile()
+        ListInitStatus = true
+        CheckUpdate()
 		if nil != err {
 			c.JSON(http.StatusOK, gin.H{
 				"result":   "",
@@ -47,6 +70,7 @@ func Update(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{
 			"result":   stdout,
+            "value": ListJSON,
 			"errorno":  0,
 			"errormsg": ""})
 		return
@@ -96,7 +120,7 @@ func GenerateList() ([]Item, map[string]Item) {
 		return nil, nil
 	}
 
-	var list []Item
+	var list Items
 	var m = make(map[string]Item)
 
 	for _, content := range contents { // 格式化md文件并存在'./'articles文件夹中
@@ -109,6 +133,7 @@ func GenerateList() ([]Item, map[string]Item) {
 		id := args.ID
 		m[id] = args
 	}
+    sort.Sort(list)
 	return list, m
 }
 
@@ -143,16 +168,19 @@ func convert(path, dir string) (*os.File, Item, error) {
 
 		// 日期
 		if !foundDate {
-			if strings.HasPrefix(istring, "[date]") {
-				args.Date = istring
+            trimString := strings.TrimSuffix(istring, "\n")
+			if strings.HasPrefix(trimString, "[date]") {
+                args.Date = strings.TrimPrefix(trimString, "[date]")
+                args.Date = strings.TrimPrefix(args.Date, " ")
 				foundDate = true
 				continue
 			}
 		}
 		// tags
 		if !foundTag {
-			if strings.HasPrefix(istring, "[tag]") {
-				arr := strings.Split(istring, " ")
+            trimString := strings.TrimSuffix(istring, "\n")
+			if strings.HasPrefix(trimString, "[tag]") {
+                arr := strings.Split(strings.TrimPrefix(trimString, "[tag]"), " ")
 				args.Tag = arr[1:]
 				foundTag = true
 				continue
@@ -160,8 +188,9 @@ func convert(path, dir string) (*os.File, Item, error) {
 		}
 		// 标题
 		if !foundTitle {
-			if strings.HasPrefix(istring, "# ") {
-				args.Title = istring
+            trimString := strings.TrimSuffix(istring, "\n")
+			if strings.HasPrefix(trimString, "# ") {
+                args.Title = strings.TrimPrefix(trimString, "# ")
 				foundTitle = true
 			}
 		}
