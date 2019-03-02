@@ -84,10 +84,13 @@ Xft.dpi: 108
 #### 常用应用
 
 * 文件管理器：**pcmanfm**(Manjaro-i3 自带)
+* 词典：**ydcv**
 * 快捷启动器：**rofi**
   ```sh
   # Add in ~/.i3/config
   bindsym $mod+p exec rofi -show combi
+  # 在rofi中启动ydcv
+  bindsym $mod+t exec rofi -modi ydcv:'ydcv' -show ydcv
   ```
 * 桌面图片管理：**nitrogen**(Manjaro-i3 自带)
   ```sh
@@ -95,7 +98,7 @@ Xft.dpi: 108
   exec_always --no-startup-id nitrogen --set-zoom ~/img/background.jpg
   ```
 * 浏览器：**google-chrome**
-* 音乐播放器：**mocp**(Manjaro-i3 自带)、**netease-cloud-music**
+* 音乐播放器：**mocp**(Manjaro-i3 自带)、**spotify**
 * 开始菜单：**morc_menu**(Manjaro-i3 自带, `mod+z`)
 * 通用菜单：**bmenu**(Manjaro-i3 自带, `mod+ctrl+b`)
 

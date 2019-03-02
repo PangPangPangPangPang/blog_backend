@@ -141,7 +141,7 @@ CMD ["/bin/bash", "/root/web_app/auto_setup.sh"]
 总结一下整个部署流程
 1. 将写好的Dockerfile放到你的工程目录的跟目录下并进入
 2. 构建镜像 **docker build .**
-3. 命名镜像 **docker tag user/repo:version**
+3. 命名镜像 **docker tag <镜像> user/repo:version**
 4. 上传镜像 **docker push user/repo:version**
 5. 上你的开发机 **docker run -p 8000:80 -i -t user/repo:version**
 

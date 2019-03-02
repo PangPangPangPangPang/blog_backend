@@ -2,6 +2,8 @@ FROM golang:latest
 
 # 打包是定义密钥用于执行更新
 ENV BBE_SECRET_KEY
+# 打包为release
+ENV GIN_MODE release
 
 WORKDIR /root/blog_backend
 COPY . /root/blog_backend
