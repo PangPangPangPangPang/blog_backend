@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-    "fmt"
 )
 
 // Article 获取文章
 func Article(c *gin.Context) {
+
 	CheckUpdate()
 
 	id := c.Query("id")
@@ -24,7 +25,7 @@ func Article(c *gin.Context) {
 
 	j, _ := json.Marshal(&article)
 
-    fmt.Println(j)
+	fmt.Println(j)
 	c.JSON(http.StatusOK, gin.H{
 		"result":   string(j),
 		"errorno":  0,

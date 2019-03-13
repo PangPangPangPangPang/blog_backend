@@ -84,6 +84,7 @@ Xft.dpi: 108
 #### 常用应用
 
 * 文件管理器：**pcmanfm**(Manjaro-i3 自带)
+* 邮件：**mailsprint**
 * 词典：**ydcv**
 * 快捷启动器：**rofi**
   ```sh

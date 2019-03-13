@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
-    "sort"
-    "time"
+	"time"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -23,23 +23,24 @@ type Item struct {
 	Content string   `json:"content"`
 }
 
-// 实现按照时间排序Item
+// Items 实现按照时间排序Item
 type Items []Item
+
 func (l Items) Less(i, j int) bool {
-    di := l[i].Date
-    dj := l[j].Date
-    format := "2006-01-02 15:04:05"
-    ri, _ := time.Parse(format, di)
-    rj, _ := time.Parse(format, dj)
-    return ri.After(rj)
+	di := l[i].Date
+	dj := l[j].Date
+	format := "2006-01-02 15:04:05"
+	ri, _ := time.Parse(format, di)
+	rj, _ := time.Parse(format, dj)
+	return ri.After(rj)
 }
 
 func (l Items) Swap(i, j int) {
-    l[i], l[j] = l[j], l[i]
+	l[i], l[j] = l[j], l[i]
 }
 
 func (l Items) Len() int {
-    return len(l)
+	return len(l)
 }
 
 // ListInitStatus 检查文章的初始化状态,如果为false,则生成文章列表等并缓存在内存中,如果为true,则从内存取
@@ -58,8 +59,8 @@ func Update(c *gin.Context) {
 	if secretkey == envkey {
 		// update
 		stdout, err := updateStaticFile()
-        ListInitStatus = true
-        CheckUpdate()
+		ListInitStatus = true
+		CheckUpdate()
 		if nil != err {
 			c.JSON(http.StatusOK, gin.H{
 				"result":   "",
@@ -70,7 +71,7 @@ func Update(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{
 			"result":   stdout,
-            "value": ListJSON,
+			"value":    ListJSON,
 			"errorno":  0,
 			"errormsg": ""})
 		return
@@ -94,6 +95,7 @@ func updateStaticFile() (string, error) {
 
 // CheckUpdate 检查文章更新状态并且更新
 func CheckUpdate() {
+
 	if ListInitStatus {
 		ListInitStatus = false
 		list, m := GenerateList()
@@ -133,7 +135,7 @@ func GenerateList() ([]Item, map[string]Item) {
 		id := args.ID
 		m[id] = args
 	}
-    sort.Sort(list)
+	sort.Sort(list)
 	return list, m
 }
 
@@ -168,19 +170,19 @@ func convert(path, dir string) (*os.File, Item, error) {
 
 		// 日期
 		if !foundDate {
-            trimString := strings.TrimSuffix(istring, "\n")
+			trimString := strings.TrimSuffix(istring, "\n")
 			if strings.HasPrefix(trimString, "[date]") {
-                args.Date = strings.TrimPrefix(trimString, "[date]")
-                args.Date = strings.TrimPrefix(args.Date, " ")
+				args.Date = strings.TrimPrefix(trimString, "[date]")
+				args.Date = strings.TrimPrefix(args.Date, " ")
 				foundDate = true
 				continue
 			}
 		}
 		// tags
 		if !foundTag {
-            trimString := strings.TrimSuffix(istring, "\n")
+			trimString := strings.TrimSuffix(istring, "\n")
 			if strings.HasPrefix(trimString, "[tag]") {
-                arr := strings.Split(strings.TrimPrefix(trimString, "[tag]"), " ")
+				arr := strings.Split(strings.TrimPrefix(trimString, "[tag]"), " ")
 				args.Tag = arr[1:]
 				foundTag = true
 				continue
@@ -188,9 +190,9 @@ func convert(path, dir string) (*os.File, Item, error) {
 		}
 		// 标题
 		if !foundTitle {
-            trimString := strings.TrimSuffix(istring, "\n")
+			trimString := strings.TrimSuffix(istring, "\n")
 			if strings.HasPrefix(trimString, "# ") {
-                args.Title = strings.TrimPrefix(trimString, "# ")
+				args.Title = strings.TrimPrefix(trimString, "# ")
 				foundTitle = true
 			}
 		}
@@ -202,5 +204,4 @@ func convert(path, dir string) (*os.File, Item, error) {
 			return ofile, args, nil
 		}
 	}
-	return ofile, args, nil
 }
