@@ -6,6 +6,8 @@
 *.dylib
 blog_backend
 articles
+*.db
+debug
 
 # Test binary, build with `go test -c`
 *.test
