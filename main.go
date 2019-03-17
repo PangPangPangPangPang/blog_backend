@@ -6,9 +6,15 @@ import (
 )
 
 func main() {
+	// Init  database for comment.
+	InitDatabase()
+
+	// Run http service.
 	router := gin.New()
 	router.Use(gin.Logger())
+
 	router.GET("/list", List)
+	router.POST("/register", register)
 	router.GET("/article", Article)
 	router.GET("/update/:secretkey", Update)
 	router.Use(static.Serve("/", static.LocalFile("./static", true)))

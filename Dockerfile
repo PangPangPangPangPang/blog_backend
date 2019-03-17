@@ -10,6 +10,8 @@ COPY . /root/blog_backend
 
 RUN go get github.com/gin-gonic/gin
 RUN go get github.com/gin-gonic/contrib/static
+RUN go get github.com/satori/go.uuid
+RUN go get github.com/mattn/go-sqlite3
 
 RUN go build .
 
