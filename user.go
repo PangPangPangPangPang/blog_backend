@@ -50,6 +50,7 @@ func register(c *gin.Context) {
 		return
 	}
 
+	// Exec insert.
 	email := c.Query("email")
 	blog := c.Query("blog")
 	iconURL := c.Query("icon_url")
