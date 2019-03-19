@@ -41,7 +41,14 @@ func AddComment(c *gin.Context) {
 
 	parentID := c.PostForm("parent_id")
 	forefatherID := c.PostForm("forefather_id")
-	insert := fmt.Sprintf("insert into comment(content, article_id, parent_id, forefather_id, uuid) values('%s', '%s', '%s', '%s', '%s')", content, articleID, parentID, forefatherID, uuid)
+	insert := fmt.Sprintf(`insert into comment
+                           (content, 
+                           article_id,
+                           parent_id,
+                           forefather_id,
+                           uuid) 
+                           values('%s', '%s', '%s', '%s', '%s')`,
+		content, articleID, parentID, forefatherID, uuid)
 	res, err := DefaultDB.Exec(insert)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -68,7 +75,9 @@ func FetchComment(c *gin.Context) {
 		return
 	}
 
-	fetch := fmt.Sprintf("select * from comment where article_id = '%s' and is_delete = 0", articleID)
+	fetch := fmt.Sprintf(`select * 
+                          from comment 
+                          where article_id = '%s' and is_delete = 0`, articleID)
 	rows, err := DefaultDB.Query(fetch)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -89,7 +98,17 @@ func FetchComment(c *gin.Context) {
 		var idDelete int
 		var votePlus int
 		var voteMinus int
-		err := rows.Scan(&commentID, &articleID, &parentID, &forefatherID, &uuid, &content, &idDelete, &votePlus, &voteMinus)
+		err := rows.Scan(
+			&commentID,
+			&articleID,
+			&parentID,
+			&forefatherID,
+			&uuid,
+			&content,
+			&idDelete,
+			&votePlus,
+			&voteMinus,
+		)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"result":   err,
@@ -109,15 +128,6 @@ func FetchComment(c *gin.Context) {
 			votePlus,
 			voteMinus,
 		}
-		// comment.CommentID = commentID
-		// comment.ArticleID = articleID
-		// comment.ParentID = parentID
-		// comment.ForefatherID = forefatherID
-		// comment.UUID = uuid
-		// comment.Content = content
-		// comment.IDDelete = idDelete
-		// comment.VotePlus = votePlus
-		// comment.VoteMinus = voteMinus
 		list = append(list, comment)
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -140,7 +150,10 @@ func DeleteComment(c *gin.Context) {
 	if !check {
 		return
 	}
-	update := fmt.Sprintf("update comment set is_delete = 1 where comment_id = '%s' and uuid = '%s'", commentID, uuid)
+	update := fmt.Sprintf(`update comment 
+                           set is_delete = 1 
+                           where comment_id = '%s' and uuid = '%s'`,
+		commentID, uuid)
 	_, err := DefaultDB.Exec(update)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
