@@ -11,13 +11,8 @@ import (
 )
 
 func register(c *gin.Context) {
-	name := c.Query("name")
-	if name == "" {
-		c.JSON(http.StatusOK, gin.H{
-			"result":   "",
-			"errorno":  1,
-			"errormsg": "Invalid user name",
-		})
+	name, check := CheckPostParamsValid(c, "name", "Invalid user name.")
+	if !check {
 		return
 	}
 
@@ -50,20 +45,20 @@ func register(c *gin.Context) {
 		return
 	}
 
-	email := c.Query("email")
-	blog := c.Query("blog")
-	iconURL := c.Query("icon_url")
-	updateDate := c.Query("update_date")
+	email := c.PostForm("email")
+	blog := c.PostForm("blog")
+	iconURL := c.PostForm("icon_url")
+	updateDate := c.PostForm("update_date")
 	uuid, _ := generateUserID()
 	insert := fmt.Sprintf("insert into user(name, uuid, email, blog, icon_url, update_date) values('%s', '%s', '%s', '%s', '%s', '%s')", name, uuid, email, blog, iconURL, updateDate)
-	res, err := DefaultDB.Exec(insert)
+	_, err = DefaultDB.Exec(insert)
 	if err != nil {
 		log.Fatal(err)
 	}
-	rowsid, _ := res.RowsAffected()
-	res.RowsAffected()
+	// rowsid, _ := res.RowsAffected()
+	// res.RowsAffected()
 	c.JSON(http.StatusOK, gin.H{
-		"result":   rowsid,
+		"result":   uuid,
 		"errorno":  0,
 		"errormsg": "success",
 	})
