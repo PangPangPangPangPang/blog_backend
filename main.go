@@ -15,6 +15,9 @@ func main() {
 
 	router.GET("/list", List)
 	router.POST("/register", register)
+	router.POST("/addcomment", AddComment)
+	router.POST("/deletecomment", DeleteComment)
+	router.GET("/fetchcomment", FetchComment)
 	router.GET("/article", Article)
 	router.GET("/update/:secretkey", Update)
 	router.Use(static.Serve("/", static.LocalFile("./static", true)))
