@@ -45,10 +45,11 @@ func register(c *gin.Context) {
 		return
 	}
 
-	email := c.PostForm("email")
-	blog := c.PostForm("blog")
-	iconURL := c.PostForm("icon_url")
-	updateDate := c.PostForm("update_date")
+	// Exec insert.
+	email := c.Query("email")
+	blog := c.Query("blog")
+	iconURL := c.Query("icon_url")
+	updateDate := c.Query("update_date")
 	uuid, _ := generateUserID()
 	insert := fmt.Sprintf("insert into user(name, uuid, email, blog, icon_url, update_date) values('%s', '%s', '%s', '%s', '%s', '%s')", name, uuid, email, blog, iconURL, updateDate)
 	_, err = DefaultDB.Exec(insert)

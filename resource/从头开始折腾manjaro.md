@@ -47,7 +47,11 @@ makepkg -si
 ```
 
 #### 终端
-习惯用**terminator**跟**zsh**就还是用它们就好了
+习惯用**kitty**跟**zsh**就还是用它们就好了
+```sh
+# ~/.config/kitty/kitty.conf
+yay -S kitty
+```
 ```sh
 sudo pacman -S terminator zsh
 
