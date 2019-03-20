@@ -9,7 +9,7 @@ import (
 func List(c *gin.Context) {
 	CheckUpdate()
 	c.JSON(http.StatusOK, gin.H{
-		"result":   ListJSON,
-		"errorno":  0,
-		"errormsg": ""})
+		"result":    ListJSON,
+		"errorcode": 0,
+		"errormsg":  ""})
 }

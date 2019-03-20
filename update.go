@@ -63,23 +63,23 @@ func Update(c *gin.Context) {
 		CheckUpdate()
 		if nil != err {
 			c.JSON(http.StatusOK, gin.H{
-				"result":   "",
-				"errorno":  1,
-				"errormsg": "Update failed"})
+				"result":    "",
+				"errorcode": 1,
+				"errormsg":  "Update failed"})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"result":   stdout,
-			"value":    ListJSON,
-			"errorno":  0,
-			"errormsg": ""})
+			"result":    stdout,
+			"value":     ListJSON,
+			"errorcode": 0,
+			"errormsg":  ""})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"result":   "",
-		"errorno":  1,
-		"errormsg": "Error secret key"})
+		"result":    "",
+		"errorcode": 1,
+		"errormsg":  "Error secret key"})
 }
 
 func updateStaticFile() (string, error) {
