@@ -7,19 +7,24 @@
 既然作为一个管理者，必须合理的安排自己的事情，这时候就需要一个**Todolist**来帮助你规划事项。经过一系列选型（装逼为主），最终选用了这个终端工具：**Taskwarrior**
 
 当然了本文主要是用来安利~~备忘~~的，如果你是一个自身Geek，那么根据你的系统安装后即可关闭本篇文章。
+
 ```sh
 yay -S task
 man task
 ```
 好啦，正式进入正文！
 
+
 ## 简介
+
 ```sh
 # 基础命令构成
 task <filter> <command> [ <mods> | <args> ]
 ```
+
 * **task**：顾名思义，就是主命令啦！
 * **filter**：顾名思义，就是filter啦！开个玩笑，这个位置可以加一些限定条件。
+
 ```sh
 task project:Home list # 限定工作区
 task project:Home +weekend garden list  # +weekend为限定标签， graden为模糊匹配
@@ -28,6 +33,7 @@ task 28 # 28为task的ID
 ```
 
 * **mods**: 顾名思义（能不能少用这个词），指定task的属性。
+
 ```sh
 task <filter> <command> project:Home
 task <filter> <command> +weekend +garden due:tomorrow
@@ -37,6 +43,7 @@ task <filter> <command> /from/to/g    <- replace all matches
 ```
 
 * **command**：**command**就太多了，其中的**read subcommands**建议自己用**man**去看，我这里记录几个常用的命令。
+
 ```sh
 # Read subcommands
 task <filter> # 展示相关task
@@ -56,7 +63,9 @@ task <filter> done <mods> # 标注指定task完成
 task <filter> edit # 用编辑器编辑指定task
 task <filter> modify <mods> # 用编辑指定task
 ```
+
 * **attributes**：task的属性。
+
 ```sh
 +<tag> # 添加标签
 project:<project-name> # 工作区名称
@@ -67,6 +76,7 @@ recur:<frequency> # day/month 等指定循环频率，用于设置周期性任�
 ```
 
 * **attributes modifiers**：属性的修饰符
+
 ```sh
 before (synonyms under, below)
 after (synonyms over, above)
@@ -86,6 +96,7 @@ task due.before:eom priority.not:L list
 ```
 
 * **date**：特别强调一下due的描述
+
 ```sh
 due:2019-03-21
 due:now
@@ -102,6 +113,7 @@ due:9hrs
 
 1. 实用[inthe.am](https://inthe.am/)生成3个密钥，并离线保存好。
 2. 在**~/.taskrc**文件中添加如下内容(当然了这些设置都可以在[inthe.am](https://inthe.am/configure))中找到。
+
 ```sh
 taskd.certificate=/path/to/private.certificate.pem
 taskd.key=/path/to/private.key.pem
@@ -110,6 +122,7 @@ taskd.server=taskwarrior.inthe.am:53589
 taskd.credentials=<your credentials>
 taskd.trust=ignore hostname
 ```
+
 3. 执行**task sync init**进行初始化。
 4. 正常执行添加task等操作。
 5. 执行**task sync**将本地修改同步到云端。（从云端将内容同步到本地也是用这个命令）
