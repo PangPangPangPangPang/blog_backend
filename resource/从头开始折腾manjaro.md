@@ -106,6 +106,6 @@ Xft.dpi: 108
 * 音乐播放器：**mocp**(Manjaro-i3 自带)、**spotify**
 * 开始菜单：**morc_menu**(Manjaro-i3 自带, `mod+z`)
 * 通用菜单：**bmenu**(Manjaro-i3 自带, `mod+ctrl+b`)
-
+* investigate socket: ***ss***(代替netstat)
 ## 写在最后
 Manjaro天下第一！
