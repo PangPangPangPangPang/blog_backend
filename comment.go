@@ -52,18 +52,18 @@ func AddComment(c *gin.Context) {
 	res, err := DefaultDB.Exec(insert)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   err,
-			"errorno":  1,
-			"errormsg": "Insert comment failed.",
+			"result":    err,
+			"errorcode": 1,
+			"errormsg":  "Insert comment failed.",
 		})
 		return
 	}
 	rowsid, _ := res.RowsAffected()
 	res.RowsAffected()
 	c.JSON(http.StatusOK, gin.H{
-		"result":   rowsid,
-		"errorno":  0,
-		"errormsg": "success",
+		"result":    rowsid,
+		"errorcode": 0,
+		"errormsg":  "success",
 	})
 
 }
@@ -81,9 +81,9 @@ func FetchComment(c *gin.Context) {
 	rows, err := DefaultDB.Query(fetch)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   err,
-			"errorno":  1,
-			"errormsg": "Fetch comment failed.",
+			"result":    err,
+			"errorcode": 1,
+			"errormsg":  "Fetch comment failed.",
 		})
 		return
 	}
@@ -111,9 +111,9 @@ func FetchComment(c *gin.Context) {
 		)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"result":   err,
-				"errorno":  1,
-				"errormsg": "Fetch comment failed.",
+				"result":    err,
+				"errorcode": 1,
+				"errormsg":  "Fetch comment failed.",
 			})
 			return
 		}
@@ -134,8 +134,8 @@ func FetchComment(c *gin.Context) {
 		"result": gin.H{
 			"comments": list,
 		},
-		"errorno":  0,
-		"errormsg": "Success",
+		"errorcode": 0,
+		"errormsg":  "Success",
 	})
 	return
 }
@@ -157,16 +157,16 @@ func DeleteComment(c *gin.Context) {
 	_, err := DefaultDB.Exec(update)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   err,
-			"errorno":  1,
-			"errormsg": "Fetch comment failed.",
+			"result":    err,
+			"errorcode": 1,
+			"errormsg":  "Fetch comment failed.",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"result":   "",
-		"errorno":  0,
-		"errormsg": "Success",
+		"result":    "",
+		"errorcode": 0,
+		"errormsg":  "Success",
 	})
 	return
 }
@@ -176,9 +176,9 @@ func CheckPostParamsValid(c *gin.Context, param string, errormsg string) (string
 	p := c.PostForm(param)
 	if p == "" {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   "",
-			"errorno":  1,
-			"errormsg": errormsg,
+			"result":    "",
+			"errorcode": 1,
+			"errormsg":  errormsg,
 		})
 		return "", false
 	}
@@ -190,9 +190,9 @@ func CheckGetParamsValid(c *gin.Context, param string, errormsg string) (string,
 	p := c.Query(param)
 	if p == "" {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   "",
-			"errorno":  1,
-			"errormsg": errormsg,
+			"result":    "",
+			"errorcode": 1,
+			"errormsg":  errormsg,
 		})
 		return "", false
 	}

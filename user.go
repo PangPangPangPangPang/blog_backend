@@ -38,9 +38,9 @@ func register(c *gin.Context) {
 	}
 	if exist {
 		c.JSON(http.StatusOK, gin.H{
-			"result":   "",
-			"errorno":  1,
-			"errormsg": "User already exist.",
+			"result":    "",
+			"errorcode": 1,
+			"errormsg":  "User already exist.",
 		})
 		return
 	}
@@ -59,9 +59,9 @@ func register(c *gin.Context) {
 	// rowsid, _ := res.RowsAffected()
 	// res.RowsAffected()
 	c.JSON(http.StatusOK, gin.H{
-		"result":   uuid,
-		"errorno":  0,
-		"errormsg": "success",
+		"result":    uuid,
+		"errorcode": 0,
+		"errormsg":  "success",
 	})
 }
 

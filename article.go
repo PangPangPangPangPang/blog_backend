@@ -8,7 +8,6 @@ import (
 	"net/http"
 )
 
-
 // Article 获取文章
 func Article(c *gin.Context) {
 
@@ -28,12 +27,13 @@ func Article(c *gin.Context) {
 
 	fmt.Println(j)
 	c.JSON(http.StatusOK, gin.H{
-		"result":   string(j),
-		"errorno":  0,
-		"errormsg": ""})
+		"result":    string(j),
+		"errorcode": 0,
+		"errormsg":  ""})
 }
 
 func readFile(path string) (string, error) {
+
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		return "", err
