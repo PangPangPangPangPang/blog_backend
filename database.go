@@ -28,6 +28,7 @@ func createUserTable() {
 	sql := `
     create table if not exists user (id integer primary key autoincrement, 
                                      name text default '', 
+                                     sex text default '', 
                                      uuid text default '', 
                                      email text default '',
                                      create_date datetime default current_timestamp, 
@@ -48,7 +49,11 @@ func createCommentTable() {
                                         parent_id text default '',
                                         forefather_id text default '',
                                         uuid text default '',
+                                        name text default '',
+                                        blog text default '',
+                                        icon_url text default '',
                                         content text default '',
+                                        create_date datetime default current_timestamp, 
                                         is_delete integer default 0,
                                         vote_plus integer default 0,
                                         vote_minus integer default 0);`
