@@ -6,9 +6,37 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"time"
 )
+
+func upload(c *gin.Context) {
+
+}
+
+func uploadIcon(c *gin.Context) (string, error) {
+	file, header, err := c.Request.FormFile("file")
+	if err != nil {
+		return "", err
+	}
+	filename := header.Filename
+
+	out, err := os.Create("./avatar/" + filename)
+	defer out.Close()
+	if err != nil {
+		return "", err
+	}
+
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return "", err
+	}
+	return filename, nil
+
+}
 
 func register(c *gin.Context) {
 	name, check := CheckPostParamsValid(c, "name", "Invalid user name.")
@@ -45,21 +73,39 @@ func register(c *gin.Context) {
 		return
 	}
 
+	iconURL, err := uploadIcon(c)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"result":    "",
+			"errorcode": 1,
+			"errormsg":  "Upload icon failed.",
+		})
+		return
+	}
+
 	// Exec insert.
-	email := c.Query("email")
-	blog := c.Query("blog")
-	iconURL := c.Query("icon_url")
-	updateDate := c.Query("update_date")
+	email := c.PostForm("email")
+	blog := c.PostForm("blog")
+	updateDate := time.Now().UTC()
 	uuid, _ := generateUserID()
 	insert := fmt.Sprintf("insert into user(name, uuid, email, blog, icon_url, update_date) values('%s', '%s', '%s', '%s', '%s', '%s')", name, uuid, email, blog, iconURL, updateDate)
 	_, err = DefaultDB.Exec(insert)
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusOK, gin.H{
+			"result":    "",
+			"errorcode": 1,
+			"errormsg":  "Registe user failed.",
+		})
+		return
 	}
-	// rowsid, _ := res.RowsAffected()
-	// res.RowsAffected()
 	c.JSON(http.StatusOK, gin.H{
-		"result":    uuid,
+		"result": gin.H{
+			"uuid":     uuid,
+			"blog":     blog,
+			"email":    email,
+			"icon_url": iconURL,
+			"name":     name,
+		},
 		"errorcode": 0,
 		"errormsg":  "success",
 	})

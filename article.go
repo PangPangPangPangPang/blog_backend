@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
@@ -25,7 +24,6 @@ func Article(c *gin.Context) {
 
 	j, _ := json.Marshal(&article)
 
-	fmt.Println(j)
 	c.JSON(http.StatusOK, gin.H{
 		"result":    string(j),
 		"errorcode": 0,

@@ -16,13 +16,13 @@ type Comment struct {
 	ForefatherID string `json:"forefather_id"`
 	UUID         string `json:"uuid"`
 	Content      string `json:"content"`
-	Name         string `json:"name"`
-	Blog         string `json:"blog"`
-	IconURL      string `json:"icon_url"`
-	CreateDate   string `json:"create_date"`
-	IDDelete     int    `json:"is_delete"`
-	VotePlus     int    `json:"vote_plus"`
-	VoteMinus    int    `json:"vote_minus"`
+	// Name         string `json:"name"`
+	// Blog         string `json:"blog"`
+	// IconURL      string `json:"icon_url"`
+	CreateDate string `json:"create_date"`
+	IDDelete   int    `json:"is_delete"`
+	VotePlus   int    `json:"vote_plus"`
+	VoteMinus  int    `json:"vote_minus"`
 }
 
 // Comments  comment list
@@ -30,15 +30,13 @@ type Comments []Comment
 
 // AddComment for add comment
 func AddComment(c *gin.Context) {
+	a := c.Param("article_id")
+	fmt.Println(a)
 	articleID, check := CheckPostParamsValid(c, "article_id", "Invalid article.")
 	if !check {
 		return
 	}
 	uuid, check := CheckPostParamsValid(c, "uuid", "Invalid user.")
-	if !check {
-		return
-	}
-	name, check := CheckPostParamsValid(c, "name", "Invalid name.")
 	if !check {
 		return
 	}
@@ -49,19 +47,14 @@ func AddComment(c *gin.Context) {
 
 	parentID := c.PostForm("parent_id")
 	forefatherID := c.PostForm("forefather_id")
-	blog := c.PostForm("blog")
-	iconURL := c.PostForm("icon_url")
 	insert := fmt.Sprintf(`insert into comment
                            (content, 
                            article_id,
                            parent_id,
                            forefather_id,
-                           name,
-                           blog,
-                           icon_url,
                            uuid) 
-                           values('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')`,
-		content, articleID, parentID, forefatherID, name, blog, iconURL, uuid)
+                           values('%s', '%s', '%s', '%s', '%s')`,
+		content, articleID, parentID, forefatherID, uuid)
 	res, err := DefaultDB.Exec(insert)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -108,9 +101,6 @@ func FetchComment(c *gin.Context) {
 		var forefatherID string
 		var uuid string
 		var content string
-		var iconURL string
-		var name string
-		var blog string
 		var createDate string
 		var idDelete int
 		var votePlus int
@@ -121,9 +111,6 @@ func FetchComment(c *gin.Context) {
 			&parentID,
 			&forefatherID,
 			&uuid,
-			&name,
-			&blog,
-			&iconURL,
 			&content,
 			&createDate,
 			&idDelete,
@@ -145,9 +132,6 @@ func FetchComment(c *gin.Context) {
 			forefatherID,
 			uuid,
 			content,
-			name,
-			blog,
-			iconURL,
 			createDate,
 			idDelete,
 			votePlus,
