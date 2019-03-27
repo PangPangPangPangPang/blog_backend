@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	// "log"
 	"net/http"
+	"strings"
 )
 
 // Comment comment
@@ -74,7 +75,7 @@ func AddComment(c *gin.Context) {
 
 }
 
-// FetchComment fetch comment
+// FetchComment fetch commaent
 func FetchComment(c *gin.Context) {
 	articleID, check := CheckGetParamsValid(c, "article_id", "Invalid article.")
 	if !check {
@@ -137,8 +138,20 @@ func FetchComment(c *gin.Context) {
 			votePlus,
 			voteMinus,
 		}
+
+		fmt.Println(uuid)
 		list = append(list, comment)
 	}
+	uuidList := []string{}
+	for index := range list {
+		comment := list[index]
+		uuid := comment.UUID
+		uuidList = append(uuidList, uuid)
+	}
+	uuids := strings.Join(uuidList, ",")
+	fetchUsers := fmt.Sprintf(`select * from user where id = %s`, uuids)
+
+	fmt.Println(fetchUsers)
 	c.JSON(http.StatusOK, gin.H{
 		"result": gin.H{
 			"comments":   list,

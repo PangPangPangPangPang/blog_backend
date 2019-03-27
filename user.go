@@ -5,7 +5,7 @@ import (
 	// "encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/satori/go.uuid"
+	u "github.com/satori/go.uuid"
 	"io"
 	"log"
 	"net/http"
@@ -74,14 +74,14 @@ func register(c *gin.Context) {
 	}
 
 	iconURL, err := uploadIcon(c)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"result":    "",
-			"errorcode": 1,
-			"errormsg":  "Upload icon failed.",
-		})
-		return
-	}
+	// if err != nil {
+	// c.JSON(http.StatusOK, gin.H{
+	// "result":    "",
+	// "errorcode": 1,
+	// "errormsg":  "Upload icon failed.",
+	// })
+	// return
+	// }
 
 	// Exec insert.
 	email := c.PostForm("email")
@@ -112,8 +112,8 @@ func register(c *gin.Context) {
 }
 
 func generateUserID() (id string, err error) {
-	var ret uuid.UUID
-	temp, err := uuid.NewV4()
+	var ret u.UUID
+	temp, err := u.NewV4()
 	ret = temp
 	if err != nil {
 		return ret.String(), err
