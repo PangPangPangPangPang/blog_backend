@@ -17,13 +17,13 @@ type Comment struct {
 	ForefatherID string `json:"forefather_id"`
 	UUID         string `json:"uuid"`
 	Content      string `json:"content"`
-	// Name         string `json:"name"`
-	// Blog         string `json:"blog"`
-	// IconURL      string `json:"icon_url"`
-	CreateDate string `json:"create_date"`
-	IDDelete   int    `json:"is_delete"`
-	VotePlus   int    `json:"vote_plus"`
-	VoteMinus  int    `json:"vote_minus"`
+	Name         string `json:"name"`
+	Blog         string `json:"blog"`
+	IconURL      string `json:"icon_url"`
+	CreateDate   string `json:"create_date"`
+	IDDelete     int    `json:"is_delete"`
+	VotePlus     int    `json:"vote_plus"`
+	VoteMinus    int    `json:"vote_minus"`
 }
 
 // Comments  comment list
@@ -31,8 +31,6 @@ type Comments []Comment
 
 // AddComment for add comment
 func AddComment(c *gin.Context) {
-	a := c.Param("article_id")
-	fmt.Println(a)
 	articleID, check := CheckPostParamsValid(c, "article_id", "Invalid article.")
 	if !check {
 		return
@@ -133,25 +131,72 @@ func FetchComment(c *gin.Context) {
 			forefatherID,
 			uuid,
 			content,
+			"",
+			"",
+			"",
 			createDate,
 			idDelete,
 			votePlus,
 			voteMinus,
 		}
 
-		fmt.Println(uuid)
 		list = append(list, comment)
 	}
 	uuidList := []string{}
 	for index := range list {
 		comment := list[index]
-		uuid := comment.UUID
+		uuid := fmt.Sprintf(`"%s"`, comment.UUID)
 		uuidList = append(uuidList, uuid)
 	}
-	uuids := strings.Join(uuidList, ",")
-	fetchUsers := fmt.Sprintf(`select * from user where id = %s`, uuids)
 
-	fmt.Println(fetchUsers)
+	uuids := strings.Join(uuidList, " or ")
+	fetchUsers := fmt.Sprintf(`select uuid, 
+                                icon_url, 
+                                name, 
+                                blog 
+                                from user where uuid = %s`, uuids)
+	rows, fetcherr := DefaultDB.Query(fetchUsers)
+	if fetcherr != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"result":    err,
+			"errorcode": 1,
+			"errormsg":  "Fetch comment failed.",
+		})
+		return
+	}
+
+	for rows.Next() {
+		var uuid string
+		var iconURL string
+		var name string
+		var blog string
+
+		err := rows.Scan(
+			&uuid,
+			&iconURL,
+			&name,
+			&blog,
+		)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"result":    err,
+				"errorcode": 1,
+				"errormsg":  "Fetch comment failed.",
+			})
+			return
+		}
+		for index := range list {
+			comment := list[index]
+			cuuid := comment.UUID
+			if cuuid == uuid {
+				comment.IconURL = iconURL
+				comment.Name = name
+				comment.Blog = blog
+			}
+			list[index] = comment
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"result": gin.H{
 			"comments":   list,
