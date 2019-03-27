@@ -23,6 +23,9 @@ func uploadIcon(c *gin.Context) (string, error) {
 		return "", err
 	}
 	filename := header.Filename
+	if _, err := os.Stat("./avatar/"); os.IsNotExist(err) {
+		os.Mkdir("./avatar/", os.ModePerm)
+	}
 
 	out, err := os.Create("./avatar/" + filename)
 	defer out.Close()
@@ -45,7 +48,7 @@ func register(c *gin.Context) {
 	}
 
 	// Check user exist.
-	query := fmt.Sprintf("select name from user where name = '%s'", name)
+	query := fmt.Sprintf("select name, email, uuid from user where name = '%s'", name)
 	rows, err := DefaultDB.Query(query)
 	if err != nil {
 		log.Fatal(err)
@@ -53,38 +56,48 @@ func register(c *gin.Context) {
 	defer rows.Close()
 
 	exist := false
+	var fetchEmail string
+	var fetchUuid string
 	for rows.Next() {
 		var n string
-		err := rows.Scan(&n)
+		var e string
+		var u string
+		err := rows.Scan(&n, &e, &u)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(n)
 		if n == name {
+			fetchEmail = e
+			fetchUuid = u
 			exist = true
 		}
 	}
+	email := c.PostForm("email")
 	if exist {
-		c.JSON(http.StatusOK, gin.H{
-			"result":    "",
-			"errorcode": 1,
-			"errormsg":  "User already exist.",
-		})
-		return
+		// Login if 'name' and 'email' matched.
+		if fetchEmail == email {
+			c.JSON(http.StatusOK, gin.H{
+				"result": gin.H{
+					"uuid":  fetchUuid,
+					"email": fetchEmail,
+				},
+				"errorcode": 0,
+				"errormsg":  "Login success.",
+			})
+			return
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"result":    "",
+				"errorcode": 1,
+				"errormsg":  "Account already exist.",
+			})
+			return
+		}
 	}
 
 	iconURL, err := uploadIcon(c)
-	// if err != nil {
-	// c.JSON(http.StatusOK, gin.H{
-	// "result":    "",
-	// "errorcode": 1,
-	// "errormsg":  "Upload icon failed.",
-	// })
-	// return
-	// }
 
 	// Exec insert.
-	email := c.PostForm("email")
 	blog := c.PostForm("blog")
 	updateDate := time.Now().UTC()
 	uuid, _ := generateUserID()

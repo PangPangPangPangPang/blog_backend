@@ -242,7 +242,7 @@ func DeleteComment(c *gin.Context) {
 // CheckPostParamsValid check if valid
 func CheckPostParamsValid(c *gin.Context, param string, errormsg string) (string, bool) {
 	p := c.PostForm(param)
-	if p == "" {
+	if p == "" || p == "undefined" {
 		c.JSON(http.StatusOK, gin.H{
 			"result":    "",
 			"errorcode": 1,
@@ -256,7 +256,7 @@ func CheckPostParamsValid(c *gin.Context, param string, errormsg string) (string
 // CheckGetParamsValid check if valid
 func CheckGetParamsValid(c *gin.Context, param string, errormsg string) (string, bool) {
 	p := c.Query(param)
-	if p == "" {
+	if p == "" || p == "undefined" {
 		c.JSON(http.StatusOK, gin.H{
 			"result":    "",
 			"errorcode": 1,
