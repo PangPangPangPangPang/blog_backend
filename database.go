@@ -46,7 +46,7 @@ func createCommentTable() {
 	sql := `
     create table if not exists comment (comment_id integer primary key autoincrement,
                                         article_id text default '',
-                                        parent_id text default '',
+                                        parent_id integer default 0,
                                         forefather_id text default '',
                                         uuid text default '',
                                         content text default '',

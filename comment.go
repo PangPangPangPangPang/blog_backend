@@ -13,7 +13,7 @@ import (
 type Comment struct {
 	CommentID    int    `json:"comment_id"`
 	ArticleID    string `json:"article_id"`
-	ParentID     string `json:"parent_id"`
+	ParentID     int    `json:"parent_id"`
 	ForefatherID string `json:"forefather_id"`
 	UUID         string `json:"uuid"`
 	Content      string `json:"content"`
@@ -98,7 +98,7 @@ func FetchComment(c *gin.Context) {
 	for rows.Next() {
 		var commentID int
 		var articleID string
-		var parentID string
+		var parentID int
 		var forefatherID string
 		var uuid string
 		var content string
