@@ -7,6 +7,7 @@ import (
 	// "log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 // Comment comment
@@ -20,7 +21,7 @@ type Comment struct {
 	Name         string `json:"name"`
 	Blog         string `json:"blog"`
 	IconURL      string `json:"icon_url"`
-	CreateDate   string `json:"create_date"`
+	CreateDate   int64  `json:"create_date"`
 	IDDelete     int    `json:"is_delete"`
 	VotePlus     int    `json:"vote_plus"`
 	VoteMinus    int    `json:"vote_minus"`
@@ -44,16 +45,18 @@ func AddComment(c *gin.Context) {
 		return
 	}
 
+	now := time.Now().Unix()
 	parentID := c.PostForm("parent_id")
 	forefatherID := c.PostForm("forefather_id")
 	insert := fmt.Sprintf(`insert into comment
                            (content, 
+                           create_date,
                            article_id,
                            parent_id,
                            forefather_id,
                            uuid) 
-                           values('%s', '%s', '%s', '%s', '%s')`,
-		content, articleID, parentID, forefatherID, uuid)
+                           values('%s', '%d', '%s', '%s', '%s', '%s')`,
+		content, now, articleID, parentID, forefatherID, uuid)
 	res, err := DefaultDB.Exec(insert)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -100,7 +103,7 @@ func FetchComment(c *gin.Context) {
 		var forefatherID string
 		var uuid string
 		var content string
-		var createDate string
+		var createDate int64
 		var idDelete int
 		var votePlus int
 		var voteMinus int
@@ -124,6 +127,10 @@ func FetchComment(c *gin.Context) {
 			})
 			return
 		}
+
+		// loc, _ := time.LoadLocation("Asia/Shanghai")
+		// formatDate := time.Unix(createDate, 0).In(loc).Format("2006-01-02 15:04:05")
+		// fmt.Println(formatDate)
 		var comment = Comment{
 			commentID,
 			articleID,
@@ -141,6 +148,7 @@ func FetchComment(c *gin.Context) {
 		}
 
 		list = append(list, comment)
+
 	}
 	uuidList := []string{}
 	for index := range list {

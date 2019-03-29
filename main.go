@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -12,6 +13,7 @@ func main() {
 	// Run http service.
 	router := gin.New()
 	router.Use(gin.Logger())
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	router.GET("/list", List)
 	router.POST("/register", register)

@@ -50,7 +50,7 @@ func createCommentTable() {
                                         forefather_id text default '',
                                         uuid text default '',
                                         content text default '',
-                                        create_date datetime default current_timestamp, 
+                                        create_date integer default 0, 
                                         is_delete integer default 0,
                                         vote_plus integer default 0,
                                         vote_minus integer default 0);`
