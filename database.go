@@ -13,8 +13,8 @@ var DefaultDB *sql.DB
 
 // InitDatabase init database for comment.
 func InitDatabase() {
-	// os.Remove("./main.db")
-	db, err := sql.Open("sqlite3", "./main.db")
+	dbPath := VolumnPath("main.db")
+	db, err := sql.Open("sqlite3", dbPath)
 	DefaultDB = db
 	if err != nil {
 		log.Fatal(err)

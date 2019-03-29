@@ -23,11 +23,12 @@ func uploadIcon(c *gin.Context) (string, error) {
 		return "", err
 	}
 	filename := header.Filename
-	if _, err := os.Stat("./avatar/"); os.IsNotExist(err) {
-		os.Mkdir("./avatar/", os.ModePerm)
+	avatarPath := VolumnPath("avatar")
+	if _, err := os.Stat(avatarPath); os.IsNotExist(err) {
+		os.Mkdir(avatarPath, os.ModePerm)
 	}
 
-	out, err := os.Create("./avatar/" + filename)
+	out, err := os.Create(avatarPath + "/" + filename)
 	defer out.Close()
 	if err != nil {
 		return "", err

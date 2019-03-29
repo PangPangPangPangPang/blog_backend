@@ -24,7 +24,8 @@ func main() {
 	router.GET("/article", Article)
 	router.GET("/update/:secretkey", Update)
 	router.Use(static.Serve("/", static.LocalFile("./static", true)))
-	router.Use(static.Serve("/avatar", static.LocalFile("./avatar", true)))
+	avatarPath := VolumnPath("avatar")
+	router.Use(static.Serve("/avatar", static.LocalFile(avatarPath, true)))
 
 	router.Run(":8080") // listen and serve on 0.0.0.0:8080
 }
