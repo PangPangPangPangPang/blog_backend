@@ -16,11 +16,12 @@ import (
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
 type Item struct {
-	Date    string   `json:"time"`
-	Tag     []string `json:"tags"`
-	Title   string   `json:"title"`
-	ID      string   `json:"id"`
-	Content string   `json:"content"`
+	Date        string   `json:"time"`
+	Tag         []string `json:"tags"`
+	Title       string   `json:"title"`
+	ID          string   `json:"id"`
+	Content     string   `json:"content"`
+	Description string   `json:"description"`
 }
 
 // Items 实现按照时间排序Item
@@ -51,6 +52,9 @@ var ListJSON string
 
 // Articles 文章map
 var Articles map[string]Item
+
+// ArticleList 获取未JSON化的文章数组
+var ArticleList []Item
 
 // Update force update article
 func Update(c *gin.Context) {
@@ -100,10 +104,26 @@ func CheckUpdate() {
 		ListInitStatus = false
 		list, m := GenerateList()
 		Articles = m
+		ArticleList = list
 		ob, error := json.Marshal(&list)
 		if error != nil {
 		}
 		ListJSON = string(ob)
+		readArticlesIntoMemary()
+		Rss()
+	}
+}
+
+func readArticlesIntoMemary() {
+	for k, v := range Articles {
+		id := v.ID
+		if v.Content == "" {
+			articlesPath := WorkPath("articles")
+			path := articlesPath + "/" + id + ".md"
+			content, _ := ReadFile(path)
+			v.Content = content
+			Articles[k] = v
+		}
 	}
 }
 
@@ -162,6 +182,7 @@ func convert(path, dir string) (*os.File, Item, error) {
 	foundTitle := false
 	foundDate := false
 	foundTag := false
+	foundDes := false
 
 	args.ID = MD5(title)
 
@@ -185,6 +206,16 @@ func convert(path, dir string) (*os.File, Item, error) {
 				arr := strings.Split(strings.TrimPrefix(trimString, "[tag]"), " ")
 				args.Tag = arr[1:]
 				foundTag = true
+				continue
+			}
+		}
+		// 简介
+		if !foundDes {
+			trimString := strings.TrimSuffix(istring, "\n")
+			if strings.HasPrefix(trimString, "[description]") {
+				args.Description = strings.TrimPrefix(trimString, "[description]")
+				args.Description = strings.TrimPrefix(args.Description, " ")
+				foundDes = true
 				continue
 			}
 		}

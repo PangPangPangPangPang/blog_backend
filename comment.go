@@ -136,7 +136,7 @@ func FetchComment(c *gin.Context) {
 			articleID,
 			parentID,
 			forefatherID,
-			uuid,
+			"",
 			content,
 			"",
 			"",

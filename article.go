@@ -18,7 +18,7 @@ func Article(c *gin.Context) {
 	if article.Content == "" {
 		articlesPath := WorkPath("articles")
 		path := articlesPath + "/" + id + ".md"
-		content, _ := readFile(path)
+		content, _ := ReadFile(path)
 		article.Content = content
 	}
 
@@ -30,7 +30,8 @@ func Article(c *gin.Context) {
 		"errormsg":  ""})
 }
 
-func readFile(path string) (string, error) {
+// ReadFile read  file
+func ReadFile(path string) (string, error) {
 
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {

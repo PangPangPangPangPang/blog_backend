@@ -48,10 +48,12 @@ makepkg -si
 
 #### 终端
 习惯用**kitty**跟**zsh**就还是用它们就好了
+
 ```sh
 # ~/.config/kitty/kitty.conf
 yay -S kitty
 ```
+
 ```sh
 sudo pacman -S terminator zsh
 
@@ -61,26 +63,32 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 
 #### 输入法
 习惯用**fcitx**了，其实也没什么别的选择。（= =）
+
 ```sh
 sudo pacman -S fcitx-googlepinyin
 sudo pacman -S fcitx-im             
 sudo pacman -S fcitx-configtool    
 ```
+
 然后在`~/.xprofile`文件里面加上
+
 ```sh
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
 ```
+
 最后重启下
 
 #### 屏幕分辨率
+
 ```sh
 # ~./.Xresource
 # Refresh: xrdb -merge .Xresources
 
 Xft.dpi: 108
 ```
+
 #### 默认程序修改
 
 在`.config/mimeapps.list`文件中编辑默认程序。
@@ -91,17 +99,21 @@ Xft.dpi: 108
 * 邮件：**mailsprint**
 * 词典：**ydcv**
 * 快捷启动器：**rofi**
+
   ```sh
   # Add in ~/.i3/config
   bindsym $mod+p exec rofi -show combi
   # 在rofi中启动ydcv
   bindsym $mod+t exec rofi -modi ydcv:'ydcv' -show ydcv
   ```
+
 * 桌面图片管理：**nitrogen**(Manjaro-i3 自带)
+
   ```sh
   # Add in ~/.i3/config
   exec_always --no-startup-id nitrogen --set-zoom ~/img/background.jpg
   ```
+
 * 浏览器：**google-chrome**
 * 音乐播放器：**mocp**(Manjaro-i3 自带)、**spotify**
 * 开始菜单：**morc_menu**(Manjaro-i3 自带, `mod+z`)
