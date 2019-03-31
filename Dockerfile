@@ -1,9 +1,9 @@
 FROM golang:latest
 
 # 打包是定义密钥用于执行更新
-ENV BBE_SECRET_KEY 
+ENV BBE_SECRET_KEY
 # 打包为release
-ENV GIN_MODE release
+ENV GIN_MODE release 
 
 WORKDIR /root/blog_backend
 COPY . /root/blog_backend
@@ -13,6 +13,8 @@ RUN go get github.com/gin-gonic/contrib/static
 RUN go get github.com/gin-contrib/gzip
 RUN go get github.com/satori/go.uuid
 RUN go get github.com/mattn/go-sqlite3
+RUN go get github.com/gorilla/feeds
+RUN go get gopkg.in/russross/blackfriday.v2
 
 RUN go build .
 

@@ -136,7 +136,7 @@ func FetchComment(c *gin.Context) {
 			articleID,
 			parentID,
 			forefatherID,
-			"",
+			uuid,
 			content,
 			"",
 			"",
@@ -203,6 +203,10 @@ func FetchComment(c *gin.Context) {
 			}
 			list[index] = comment
 		}
+	}
+	// 移除接口中的uuid
+	for index := range list {
+		list[index].UUID = ""
 	}
 
 	c.JSON(http.StatusOK, gin.H{
