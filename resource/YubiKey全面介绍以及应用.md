@@ -10,7 +10,7 @@ Yubikey是一个**USB Security token**。它有以下能力：
 1. 生成一次性密钥（OTP），基于**AES**或者**OATH-HOTP**
 2. 生成一个63个字符长度的静态密码
 3. Challenge/Response认证
-4. **U2F**认证，也就是有些产品的二次验证，比如github、google的帐号登录都支持**U2F**（注意有些分享里面也把U2F成为FIDO，两者等价，改名了而已）
+4. **U2F**认证，也就是有些产品的二次验证，比如github、google的帐号登录都支持**U2F**（注意有些分享里面也把U2F称为FIDO，两者等价，改名了而已）
 5. 智能卡模式（CCID）， 通过存储签名/加密/认证证书，从而可以实现ssh、邮件的签名/加密、git commit等能力
 
 ### 理解Yubikey
@@ -104,7 +104,7 @@ pacman -S opensc
 ```
 在~/.ssh/config文件中添加：
 ```sh
-S11Provider /usr/lib/opensc-pkcs11.so
+PKCS11Provider /usr/lib/opensc-pkcs11.so
 ```
 5. 将之前导出的公钥转换成SSH协议可以识别的格式：
 ```sh
@@ -113,6 +113,15 @@ $ ssh-keygen -i -m PKCS8 -f pubkey.pem > pubkey.txt
 6. 将生成的*pubkey.txt*配置到server端。
 
 经过这一系列操作之后，在正常的通过SSH登录到vps的时候，就会弹出让你输入Pin的提示，当然这个Pin就是Yubikey的Pin啦，默认是123456，也可以在[yubikey-manager-qt](https://www.archlinux.org/packages/?name=yubikey-manager-qt)中进行修改。
+
+##### Mac配置
+1. 安装[opensc](https://github.com/OpenSC/OpenSC/wiki/Download-latest-OpenSC-stable-release)
+2. 生成密钥对->导入yubikey->配vps(跟在linux的流程大致是一样的)
+3. 登录
+```sh
+# '-I' 代表使用pkcs11
+ ssh -I /usr/lib64/opensc-pkcs11.so <username>@<remote-host>
+```
 
 ## 最后
 
