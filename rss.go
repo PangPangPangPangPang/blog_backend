@@ -27,7 +27,7 @@ func Rss() {
 
 		content := []byte(Articles[id].Content)
 		des := string(blackfriday.Run(content, blackfriday.WithExtensions(blackfriday.FencedCode|blackfriday.Tables|blackfriday.SpaceHeadings|blackfriday.Strikethrough)))
-		create, _ := time.Parse("2006-01-02 15:04:05", item.Date)
+		create, _ := time.Parse("2006-01-02 15:04:05 -0700", fmt.Sprintf(`%s +0800`, item.Date))
 		feed.Items = append(feed.Items, &feeds.Item{
 			Title:       item.Title,
 			Link:        &feeds.Link{Href: fmt.Sprintf("https://mmmmmax.cn/#list/%s", item.ID)},
