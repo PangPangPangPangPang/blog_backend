@@ -4,13 +4,14 @@ package main
 import (
 	// "encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	u "github.com/satori/go.uuid"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	u "github.com/satori/go.uuid"
 )
 
 func upload(c *gin.Context) {
@@ -58,7 +59,7 @@ func register(c *gin.Context) {
 
 	exist := false
 	var fetchEmail string
-	var fetchUuid string
+	var fetchUUID string
 	for rows.Next() {
 		var n string
 		var e string
@@ -69,7 +70,7 @@ func register(c *gin.Context) {
 		}
 		if n == name {
 			fetchEmail = e
-			fetchUuid = u
+			fetchUUID = u
 			exist = true
 		}
 	}
@@ -79,21 +80,20 @@ func register(c *gin.Context) {
 		if fetchEmail == email {
 			c.JSON(http.StatusOK, gin.H{
 				"result": gin.H{
-					"uuid":  fetchUuid,
+					"uuid":  fetchUUID,
 					"email": fetchEmail,
 				},
 				"errorcode": 0,
 				"errormsg":  "Login success.",
 			})
-			return
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"result":    "",
 				"errorcode": 1,
 				"errormsg":  "Account already exist.",
 			})
-			return
 		}
+		return
 	}
 
 	iconURL, err := uploadIcon(c)
@@ -127,10 +127,7 @@ func register(c *gin.Context) {
 
 func generateUserID() (id string, err error) {
 	var ret u.UUID
-	temp, err := u.NewV4()
+	temp := u.NewV4()
 	ret = temp
-	if err != nil {
-		return ret.String(), err
-	}
 	return ret.String(), nil
 }

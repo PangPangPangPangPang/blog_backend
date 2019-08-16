@@ -13,6 +13,7 @@ func main() {
 	// Run http service.
 	router := gin.New()
 	router.Use(gin.Logger())
+
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	router.GET("/list", List)

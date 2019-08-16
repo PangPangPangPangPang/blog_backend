@@ -42,8 +42,8 @@ func Rss() {
 
 	path := WorkPath("static")
 
-	ofile, error := os.OpenFile(path+"/"+"feed", os.O_CREATE|os.O_RDWR, 0777)
-	if error != nil {
+	ofile, err := os.OpenFile(path+"/"+"feed", os.O_CREATE|os.O_RDWR, 0777)
+	if err != nil {
 		fmt.Printf("Generate RSS file error.")
 	}
 	defer ofile.Close()
