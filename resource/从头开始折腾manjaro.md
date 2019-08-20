@@ -57,7 +57,7 @@ yay -S kitty
 ```sh
 sudo pacman -S terminator zsh
 
-#顺便装上oh-my-zsh
+#顺便装上oh-my-zsh（过于臃肿，已抛弃）
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 ```
 
@@ -66,8 +66,8 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 
 ```sh
 sudo pacman -S fcitx-googlepinyin
-sudo pacman -S fcitx-im             
-sudo pacman -S fcitx-configtool    
+sudo pacman -S fcitx-im
+sudo pacman -S fcitx-configtool
 ```
 
 然后在`~/.xprofile`文件里面加上
@@ -95,7 +95,7 @@ Xft.dpi: 108
 
 #### 常用应用
 
-* 文件管理器：**pcmanfm**(Manjaro-i3 自带)
+* 文件管理器：**pcmanfm**(Manjaro-i3 自带, 高分显示器适配不太好，主用ranger)
 * 邮件：**mailsprint**
 * 词典：**ydcv**
 * 快捷启动器：**rofi**
