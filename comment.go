@@ -3,7 +3,9 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
+
 	// "log"
 	"net/http"
 	"strings"
@@ -153,7 +155,7 @@ func FetchComment(c *gin.Context) {
 	uuidList := []string{}
 	for index := range list {
 		comment := list[index]
-		uuid := fmt.Sprintf(`"%s"`, comment.UUID)
+		uuid := fmt.Sprintf(`uuid = "%s"`, comment.UUID)
 		uuidList = append(uuidList, uuid)
 	}
 
@@ -162,7 +164,7 @@ func FetchComment(c *gin.Context) {
                                 icon_url, 
                                 name, 
                                 blog 
-                                from user where uuid = %s`, uuids)
+                                from user where %s`, uuids)
 	rows, fetcherr := DefaultDB.Query(fetchUsers)
 	if fetcherr != nil {
 		c.JSON(http.StatusOK, gin.H{
