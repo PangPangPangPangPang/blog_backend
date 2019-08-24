@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Item `json:"xxx"`语法可以指定转JSON后的key
@@ -110,7 +111,7 @@ func CheckUpdate() {
 		}
 		ListJSON = string(ob)
 		readArticlesIntoMemary()
-		Rss()
+        Rss()
 	}
 }
 

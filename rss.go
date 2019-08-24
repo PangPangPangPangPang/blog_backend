@@ -3,10 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
+
 	"github.com/gorilla/feeds"
-	"gopkg.in/russross/blackfriday.v2"
+
 	"os"
 	"time"
+
+	"github.com/russross/blackfriday/v2"
 )
 
 // Rss rss generator.
