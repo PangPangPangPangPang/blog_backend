@@ -8,8 +8,8 @@ import (
 
 // WorkPath generate workpath.
 func WorkPath(file string) string {
-	home := os.Getenv("HOME") + "/blog_backend"
-	return home + "/" + file
+	current, _ := os.Getwd()
+	return current + "/" + file
 }
 
 // MD5 md5
