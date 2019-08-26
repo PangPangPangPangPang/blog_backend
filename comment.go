@@ -2,13 +2,12 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 
 	// "log"
+	"database/sql"
+	"fmt"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -78,16 +77,16 @@ func AddComment(c *gin.Context) {
 
 }
 
-// FetchComment fetch commaent
+// FetchComment fetch comment
 func FetchComment(c *gin.Context) {
 	articleID, check := CheckGetParamsValid(c, "article_id", "Invalid article.")
 	if !check {
 		return
 	}
-
-	fetch := fmt.Sprintf(`select * 
-                          from comment 
-                          where article_id = '%s' and is_delete = 0`, articleID)
+	fetch := fmt.Sprintf(`SELECT comment.*, user.icon_url, user.name, user.blog
+	                      FROM comment
+						  LEFT OUTER JOIN user on comment.uuid = user.uuid 
+						  WHERE comment.article_id = '%s'`, articleID)
 	rows, err := DefaultDB.Query(fetch)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -109,6 +108,9 @@ func FetchComment(c *gin.Context) {
 		var idDelete int
 		var votePlus int
 		var voteMinus int
+		var iconURL sql.NullString
+		var name sql.NullString
+		var blog sql.NullString
 		err := rows.Scan(
 			&commentID,
 			&articleID,
@@ -120,8 +122,12 @@ func FetchComment(c *gin.Context) {
 			&idDelete,
 			&votePlus,
 			&voteMinus,
+			&iconURL,
+			&name,
+			&blog,
 		)
 		if err != nil {
+			fmt.Println(err)
 			c.JSON(http.StatusOK, gin.H{
 				"result":    err,
 				"errorcode": 1,
@@ -129,10 +135,6 @@ func FetchComment(c *gin.Context) {
 			})
 			return
 		}
-
-		// loc, _ := time.LoadLocation("Asia/Shanghai")
-		// formatDate := time.Unix(createDate, 0).In(loc).Format("2006-01-02 15:04:05")
-		// fmt.Println(formatDate)
 		var comment = Comment{
 			commentID,
 			articleID,
@@ -140,9 +142,9 @@ func FetchComment(c *gin.Context) {
 			forefatherID,
 			uuid,
 			content,
-			"",
-			"",
-			"",
+			name.String,
+			blog.String,
+			iconURL.String,
 			createDate,
 			idDelete,
 			votePlus,
@@ -150,67 +152,7 @@ func FetchComment(c *gin.Context) {
 		}
 
 		list = append(list, comment)
-
 	}
-	uuidList := []string{}
-	for index := range list {
-		comment := list[index]
-		uuid := fmt.Sprintf(`uuid = "%s"`, comment.UUID)
-		uuidList = append(uuidList, uuid)
-	}
-
-	uuids := strings.Join(uuidList, " or ")
-	fetchUsers := fmt.Sprintf(`select uuid, 
-                                icon_url, 
-                                name, 
-                                blog 
-                                from user where %s`, uuids)
-	rows, fetcherr := DefaultDB.Query(fetchUsers)
-	if fetcherr != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"result":    err,
-			"errorcode": 1,
-			"errormsg":  "Fetch comment failed.",
-		})
-		return
-	}
-
-	for rows.Next() {
-		var uuid string
-		var iconURL string
-		var name string
-		var blog string
-
-		err := rows.Scan(
-			&uuid,
-			&iconURL,
-			&name,
-			&blog,
-		)
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{
-				"result":    err,
-				"errorcode": 1,
-				"errormsg":  "Fetch comment failed.",
-			})
-			return
-		}
-		for index := range list {
-			comment := list[index]
-			cuuid := comment.UUID
-			if cuuid == uuid {
-				comment.IconURL = iconURL
-				comment.Name = name
-				comment.Blog = blog
-			}
-			list[index] = comment
-		}
-	}
-	// 移除接口中的uuid
-	for index := range list {
-		list[index].UUID = ""
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"result": gin.H{
 			"comments":   list,
