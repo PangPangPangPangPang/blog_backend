@@ -34,3 +34,9 @@
 [Gopkg.toml](https://golang.github.io/dep/docs/Gopkg.toml.html)
 
 [Gopkg.lock](https://golang.github.io/dep/docs/Gopkg.lock.html)
+
+## 最后
+
+好吧，最后换到go mod了，虽然感觉大家都没有什么太大差别，但是还是用官方指定的稳妥一些吧。
+其实最大的好处就是，在**Podfile**里终于不用在单独写下载go get dep命令啦，这对于墙内网络来说是个大好事儿！
+至于几个命令的记录，哪天早上心情好的时候更新一下吧。
