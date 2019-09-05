@@ -7,6 +7,7 @@
 
 ### 1.总览
 SQLite总共有如下5个函数:
+
 1. date(timestring, modifier, modifier, ...) YYYY-MM-DD
 2. time(timestring, modifier, modifier, ...) HH:MM:SS
 3. datetime(timestring, modifier, modifier, ...) YYYY-MM-DD HH:MM:SS
@@ -20,6 +21,7 @@ SQLite总共有如下5个函数:
 
 ### 2.timestring
 timestring作为第一个参数，需要满足如下的格式:
+
 1. YYYY-MM-DD
 2. YYYY-MM-DD  HH:MM
 3. YYYY-MM-DD HH:MM:SS
@@ -41,6 +43,7 @@ SQLite内部使用**UTC**作为标准，或者称作"Zulu"。以下都是等价�
 
 ### 3.modifiers
 追加在timestring后的参数可以进一步更改时间
+
 1. NNN days "+1 day(s)" "-5 day(s)"
 2. NNN hours 
 3. NNN minutes
