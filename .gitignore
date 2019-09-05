@@ -16,3 +16,4 @@ debug
 *.out
 
 avatar/
+static/feed
