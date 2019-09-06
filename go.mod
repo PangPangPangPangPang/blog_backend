@@ -1,4 +1,4 @@
-module blog_backend_src
+module blog_backend
 
 go 1.12
 

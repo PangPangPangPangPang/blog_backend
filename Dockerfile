@@ -9,15 +9,15 @@ ENV GIN_MODE release
 
 ENV GO111MODULE on
 
-ENV GOPATH /go:/blog_backend_src
+ENV GOPATH /go:/root/blog_backend
 
-RUN mkdir -p /blog_backend_src
+RUN mkdir -p /root/blog_backend
 
-COPY . /blog_backend_src
-WORKDIR /blog_backend_src
+COPY . /root/blog_backend
+WORKDIR /root/blog_backend
 
 RUN go build .
 
 EXPOSE 8080
 
-ENTRYPOINT ["./blog_backend_src"]
+ENTRYPOINT ["./blog_backend"]
