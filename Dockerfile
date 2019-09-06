@@ -3,16 +3,21 @@ FROM golang:latest
 RUN go env
 
 # 打包是定义密钥用于执行更新
-ENV BBE_SECRET_KEY jkadsfvbaiojwaerklaw
+ENV BBE_SECRET_KEY
 # 打包为release
 ENV GIN_MODE release
 
-RUN mkdir -p /go/src/github.com/PangPangPangPangPang
-COPY . /go/src/github.com/PangPangPangPangPang/blog_backend
-WORKDIR /go/src/github.com/PangPangPangPangPang/blog_backend
+ENV GO111MODULE on
+
+ENV GOPATH /go:/blog_backend_src
+
+RUN mkdir -p /blog_backend_src
+
+COPY . /blog_backend_src
+WORKDIR /blog_backend_src
 
 RUN go build .
 
 EXPOSE 8080
 
-ENTRYPOINT ["./blog_backend"]
+ENTRYPOINT ["./blog_backend_src"]

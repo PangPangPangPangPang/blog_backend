@@ -4,6 +4,8 @@
 if [ ! -d "$HOME/blog_backend_temp" ]; then
     cd $HOME
     git clone http://github.com/PangPangPangPangPang/blog_backend.git $HOME/blog_backend_temp
+    echo $HOME
+    echo ---not exist---
 else
     cd $HOME/blog_backend_temp
     git pull
