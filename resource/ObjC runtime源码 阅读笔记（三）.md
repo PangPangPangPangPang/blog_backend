@@ -1,8 +1,10 @@
-# ObjC runtime源码 阅读笔记（三）
+# ObjC runtime 源码 阅读笔记（三）
+
 [date] 2016-11-01 19:20:11
 [tag] Objective-C runtime
 
 ## objc-references.h
+
 这篇文章主要分析如下两个方法的内部实现。
 
 ```c
@@ -11,6 +13,7 @@ OBJC_EXPORT void objc_setAssociatedObject(id object, const void *key, id value, 
 OBJC_EXPORT id objc_getAssociatedObject(id object, const void *key)
     OBJC_AVAILABLE(10.6, 3.1, 9.0, 1.0);
 ```
+
 这两个方法的内部实现就在**objc-references.mm**中，分别对应如下：
 
 ```c
@@ -31,7 +34,7 @@ class AssociationsManager {
 public:
     AssociationsManager()   { _lock.lock(); }
     ~AssociationsManager()  { _lock.unlock(); }
-    
+
     AssociationsHashMap &associations() {
         if (_map == NULL)
             _map = new AssociationsHashMap();
@@ -39,10 +42,11 @@ public:
     }
 };
 ```
-根据注释可以看出**AssociationsManager**管理一个hash表，并且这个表是单例，最后强调了下这个hash表的初始化是一个懒加载的过程。
+
+根据注释可以看出**AssociationsManager**管理一个 hash 表，并且这个表是单例，最后强调了下这个 hash 表的初始化是一个懒加载的过程。
 
 > 其实说到底，所有对象的关联属性都是靠这个**AssociationsHashMap**管理的。
-贴上代码分析一下：
+> 贴上代码分析一下：
 
 ```c
 void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
@@ -101,6 +105,4 @@ void _object_set_associative_reference(id object, void *key, id value, uintptr_t
 
 ```
 
-get和set的处理大同小异，有兴趣的同学可以看一下源码。
-
-
+get 和 set 的处理大同小异，有兴趣的同学可以看一下源码。

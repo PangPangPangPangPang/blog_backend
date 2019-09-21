@@ -1,9 +1,13 @@
-# ReactNative源码解析（一）：RCTUIManager
+# ReactNative 源码解析（一）：RCTUIManager
+
 [date] 2017-03-20 17:52:11
 [tag] ReactNative
+
 ## 主要流程梳理
+
 ### 初始化
-bridge会持有一个uiManager，这个uiManager负责rootView的布局和渲染逻辑。
+
+bridge 会持有一个 uiManager，这个 uiManager 负责 rootView 的布局和渲染逻辑。
 
 ```objc
 @implementation RCTBridge (RCTUIManager)
@@ -13,34 +17,41 @@ bridge会持有一个uiManager，这个uiManager负责rootView的布局和渲染
 }
 @end
 ```
-rootContentView是rootView的子视图，真正负责承载视图的功能。
-rootContentView在bundle加载结束后初始化，初始化过程中uiManager将rootContentView注册成基本视图。
+
+rootContentView 是 rootView 的子视图，真正负责承载视图的功能。
+rootContentView 在 bundle 加载结束后初始化，初始化过程中 uiManager 将 rootContentView 注册成基本视图。
 
 ```objc
 - (void)bundleFinishedLoading:(RCTBridge *)bridge
 {
 // logic code
-  _contentView = 
-  [[RCTRootContentView alloc] initWithFrame:self.bounds 
-  bridge:bridge 
-  reactTag:self.reactTag 
+  _contentView =
+  [[RCTRootContentView alloc] initWithFrame:self.bounds
+  bridge:bridge
+  reactTag:self.reactTag
   sizeFlexiblity:_sizeFlexibility];
 // logic code
 }
 ```
+
 ```objc
 [_bridge.uiManager registerRootView:self
  withSizeFlexibility:sizeFlexibility];
 ```
-在注册rootView之后在uiManager会维护一套shadowViewTree用来跟真正的viewTree做映射，这些shadowView负责用来布局的计算。其实更深层的是内部维护了一套CSSNodeTree来根shadowViewTree做一一对应。接下来会更详细的介绍。
->从以上的过程，串联了一条如下的关系：
+
+在注册 rootView 之后在 uiManager 会维护一套 shadowViewTree 用来跟真正的 viewTree 做映射，这些 shadowView 负责用来布局的计算。其实更深层的是内部维护了一套 CSSNodeTree 来根 shadowViewTree 做一一对应。接下来会更详细的介绍。
+
+> 从以上的过程，串联了一条如下的关系：
 
 ![image](http://mmmmmax.cn/uimanager.png)
 
-到这里，初始化中有关uiManager基本结束。接下来是渲染的重头戏。
+到这里，初始化中有关 uiManager 基本结束。接下来是渲染的重头戏。
+
 ### 渲染
+
 #### 渲染源头
->要触发uiManager的渲染有两个主要的方法，一个是通过js端，一个是通过native端。
+
+> 要触发 uiManager 的渲染有两个主要的方法，一个是通过 js 端，一个是通过 native 端。
 
 ```objc
 //js端触发渲染
@@ -48,10 +59,13 @@ rootContentView在bundle加载结束后初始化，初始化过程中uiManager�
 - //native端触发渲染
 - (void)setNeedsLayout
 ```
-这两个均是uiManager的方法。其中**- (void)setNeedsLayout**由native主动发起渲染。**- (void)batchDidComplete**是由bridge中的**- (void)handleBuffer:(id)buffer batchEnded:(BOOL)batchEnded**调用，而这个方法真是js回调native的统一路口。
+
+这两个均是 uiManager 的方法。其中**- (void)setNeedsLayout**由 native 主动发起渲染。**- (void)batchDidComplete**是由 bridge 中的**- (void)handleBuffer:(id)buffer batchEnded:(BOOL)batchEnded**调用，而这个方法真是 js 回调 native 的统一路口。
+
 #### 渲染过程
+
 那么接下来就要开始梳理**RCTUIManager**这个类了。
-首先梳理native暴露给js的方法：
+首先梳理 native 暴露给 js 的方法：
 
 ```objc
 //移除rootShadowView以及其subViews
@@ -60,7 +74,7 @@ RCT_EXPORT_METHOD(removeRootView:(nonnull NSNumber *)rootReactTag);
 //顾名思义，替换rootView
 RCT_EXPORT_METHOD(replaceExistingNonRootView:(nonnull NSNumber *)reactTag
                   withView:(nonnull NSNumber *)newReactTag);
-//管理节点位置                  
+//管理节点位置
 RCT_EXPORT_METHOD(manageChildren:(nonnull NSNumber *)containerTag
                   moveFromIndices:(NSArray<NSNumber *> *)moveFromIndices
                   moveToIndices:(NSArray<NSNumber *> *)moveToIndices
@@ -89,7 +103,7 @@ RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)po
 RCT_EXPORT_METHOD(dispatchViewManagerCommand:(nonnull NSNumber *)reactTag
                   commandID:(NSInteger)commandID
                   commandArgs:(NSArray<id> *)commandArgs);
-//获取对应视图坐标。                  
+//获取对应视图坐标。
 RCT_EXPORT_METHOD(measure:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback);
 //获取对应视图相对window坐标。
@@ -112,29 +126,30 @@ RCT_EXPORT_METHOD(measureLayoutRelativeToParent:(nonnull NSNumber *)reactTag
 RCT_EXPORT_METHOD(measureViewsInRect:(CGRect)rect
                   parentView:(nonnull NSNumber *)reactTag
                   errorCallback:(__unused RCTResponseSenderBlock)errorCallback
-                  callback:(RCTResponseSenderBlock)callback);  
+                  callback:(RCTResponseSenderBlock)callback);
 //截图。
 RCT_EXPORT_METHOD(takeSnapshot:(id /* NSString or NSNumber */)target
                   withOptions:(NSDictionary *)options
                   resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)；    
+                  reject:(RCTPromiseRejectBlock)reject)；
 //设置responder，提供给scrollView使用。
 RCT_EXPORT_METHOD(setJSResponder:(nonnull NSNumber *)reactTag
-                  blockNativeResponder:(__unused BOOL)blockNativeResponder)   
+                  blockNativeResponder:(__unused BOOL)blockNativeResponder)
 //清理responder。
-RCT_EXPORT_METHOD(clearJSResponder);   
+RCT_EXPORT_METHOD(clearJSResponder);
 //配置下一步动画。
 RCT_EXPORT_METHOD(configureNextLayoutAnimation:(NSDictionary *)config
                   withCallback:(RCTResponseSenderBlock)callback
-                  errorCallback:(__unused RCTResponseSenderBlock)errorCallback)             
+                  errorCallback:(__unused RCTResponseSenderBlock)errorCallback)
 ```
-暴露的方法比较多，我这里只是做一个简单的注释总结，详细请参阅源码。接下来是native端两个最重要的方法。
+
+暴露的方法比较多，我这里只是做一个简单的注释总结，详细请参阅源码。接下来是 native 端两个最重要的方法。
 
 ```objc
 typedef void (^RCTViewManagerUIBlock)(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry);
 //将对应视图的block添加到队列中，等待_layoutAndMount触发时执行。
 - (void)addUIBlock:(RCTViewManagerUIBlock)block;
-- 
+-
 - (void)_layoutAndMount
 {
   // 在即将渲染前进行最后自定义的uiBlock，即将启用，不深入分析。
@@ -163,7 +178,5 @@ typedef void (^RCTViewManagerUIBlock)(RCTUIManager *uiManager, NSDictionary<NSNu
   [self flushUIBlocks];
 }
 ```
-当然**uiBlockWithLayoutUpdateForRootView**和**_amendPendingUIBlocksWithStylePropagationUpdateForShadowView**中也有很多细节要梳理。这些东西就交给大家自己梳理吧～
 
-
-
+当然**uiBlockWithLayoutUpdateForRootView**和**\_amendPendingUIBlocksWithStylePropagationUpdateForShadowView**中也有很多细节要梳理。这些东西就交给大家自己梳理吧～

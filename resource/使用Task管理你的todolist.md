@@ -1,20 +1,21 @@
-# 使用Taskwarrior管理你的todolist
+# 使用 Taskwarrior 管理你的 todolist
+
 [date] 2019-03-20 22:04:11
 [tag] 工具 Todolist
-[description] 介绍一下最近使用的todolist软件                      
+[description] 介绍一下最近使用的 todolist 软件
 
 > 写在前面：其实自己原来并没有一个记录**Todolist**的习惯，真是挺抱歉没有及早的养成一个好习惯。最近领导任命我为组长~~狗腿子~~有意让我去负责一些管理的事情，其实我很早就表态过不希望做这些杂七杂八的事情，尽管给我安排需求就可以了，然而领导还是让我分配了不喜欢的工作,怨念！
 
 既然作为一个管理者，必须合理的安排自己的事情，这时候就需要一个**Todolist**来帮助你规划事项。经过一系列选型（装逼为主），最终选用了这个终端工具：**Taskwarrior**
 
-当然了本文主要是用来安利~~备忘~~的，如果你是一个自身Geek，那么根据你的系统安装后即可关闭本篇文章。
+当然了本文主要是用来安利~~备忘~~的，如果你是一个自身 Geek，那么根据你的系统安装后即可关闭本篇文章。
 
 ```sh
 yay -S task
 man task
 ```
-好啦，正式进入正文！
 
+好啦，正式进入正文！
 
 ## 简介
 
@@ -23,8 +24,8 @@ man task
 task <filter> <command> [ <mods> | <args> ]
 ```
 
-* **task**：顾名思义，就是主命令啦！
-* **filter**：顾名思义，就是filter啦！开个玩笑，这个位置可以加一些限定条件。
+- **task**：顾名思义，就是主命令啦！
+- **filter**：顾名思义，就是 filter 啦！开个玩笑，这个位置可以加一些限定条件。
 
 ```sh
 task project:Home list # 限定工作区
@@ -33,7 +34,7 @@ task project:Home due.before:today # due.before:today为今天之前
 task 28 # 28为task的ID
 ```
 
-* **mods**: 顾名思义（能不能少用这个词），指定task的属性。
+- **mods**: 顾名思义（能不能少用这个词），指定 task 的属性。
 
 ```sh
 task <filter> <command> project:Home
@@ -43,7 +44,7 @@ task <filter> <command> /from/to/     <- replace first match
 task <filter> <command> /from/to/g    <- replace all matches
 ```
 
-* **command**：**command**就太多了，其中的**read subcommands**建议自己用**man**去看，我这里记录几个常用的命令。
+- **command**：**command**就太多了，其中的**read subcommands**建议自己用**man**去看，我这里记录几个常用的命令。
 
 ```sh
 # Read subcommands
@@ -65,7 +66,7 @@ task <filter> edit # 用编辑器编辑指定task
 task <filter> modify <mods> # 用编辑指定task
 ```
 
-* **attributes**：task的属性。
+- **attributes**：task 的属性。
 
 ```sh
 +<tag> # 添加标签
@@ -76,7 +77,7 @@ depends:<id1,id2> # 指定依赖的task（需要在指定task后开始）
 recur:<frequency> # day/month 等指定循环频率，用于设置周期性任务
 ```
 
-* **attributes modifiers**：属性的修饰符
+- **attributes modifiers**：属性的修饰符
 
 ```sh
 before (synonyms under, below)
@@ -96,7 +97,7 @@ noword
 task due.before:eom priority.not:L list
 ```
 
-* **date**：特别强调一下due的描述
+- **date**：特别强调一下 due 的描述
 
 ```sh
 due:2019-03-21
@@ -112,7 +113,7 @@ due:9hrs
 
 ## 同步
 
-1. 实用[inthe.am](https://inthe.am/)生成3个密钥，并离线保存好。
+1. 实用[inthe.am](https://inthe.am/)生成 3 个密钥，并离线保存好。
 2. 在**~/.taskrc**文件中添加如下内容(当然了这些设置都可以在[inthe.am](https://inthe.am/configure))中找到。
 
 ```sh
@@ -125,6 +126,5 @@ taskd.trust=ignore hostname
 ```
 
 3. 执行**task sync init**进行初始化。
-4. 正常执行添加task等操作。
+4. 正常执行添加 task 等操作。
 5. 执行**task sync**将本地修改同步到云端。（从云端将内容同步到本地也是用这个命令）
-
