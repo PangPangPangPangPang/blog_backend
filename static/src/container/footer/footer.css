@@ -1,0 +1,50 @@
+/**
+ * Created by Max on 2017-04-25 13:35
+ */
+
+.footer-body {
+  display: flex;
+  /* position: relative; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1C1C1C;
+  color: white;
+  height: 90px;
+  width: 100%;
+}
+
+.footer-white {
+  display: flex;
+  /* position: relative; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #1C1C1C;
+  background-color: white;
+  height: 90px;
+  width: 100%;
+}
+
+.footer-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  fill: #1C1C1C;
+}
+
+.footer-icon-white {
+  fill: white;
+  height: 30px;
+  width: 30px;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+.footer-icon-black {
+  fill: #1C1C1C;
+  height: 30px;
+  width: 30px;
+  margin-right: 20px;
+  margin-top: 10px;
+}

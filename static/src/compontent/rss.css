@@ -1,0 +1,19 @@
+.rss-container {
+  position: fixed;
+  z-index: 10000;
+  bottom: 10px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  border-width: 2px;
+  outline: none;
+}
+
+.rss-image:hover {
+  cursor: pointer;
+}
+
+.rss-image {
+  width: 100%;
+  height: 100%;
+}

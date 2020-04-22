@@ -1,0 +1,34 @@
+.list-base {
+  display: flex;
+  justify-content: center;
+}
+
+.list-base-phone {
+  flex-direction: column;
+  align-items: center
+}
+
+.list-base-pc {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.list-template {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	padding-top: 50px;
+}
+
+.list-template-phone {
+  width: 90%;
+}
+.list-template-pc {
+  width: 50%;
+}
+
+.friend-link {
+  margin-top: 50px;
+}
+

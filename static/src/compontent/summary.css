@@ -1,0 +1,43 @@
+.summary-card {
+  border: thin solid #000000; 
+  border-width: 1.5px;
+  padding: 10px;
+	height: 75px;
+	width: 80%;
+	margin-bottom: 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.summary-card:hover {
+  box-shadow: 2px 2px 1px #000000;
+}
+
+.summary-seperate {
+  width: 100%;
+  color: #563F2E;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.summary-tags {
+  display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.summary-tag {
+  /* background-color: #563F2E; */
+	/* background-color: #1C1C1C; */
+  background-color: #D0104C;
+  font-size: 13px;
+  color: white;
+  border-radius: 2px;
+  margin-right:10px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}

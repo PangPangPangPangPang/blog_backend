@@ -1,0 +1,16 @@
+.friend-link-detail {
+  border: thin solid #000000; 
+  border-width: 1.5px;
+  padding: 10px;
+	margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.friend-link-header {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.friend-link-name {
+  margin-right: 5px;
+}

@@ -1,0 +1,57 @@
+html, body{
+	height: 100%;
+  margin: 0;
+  line-height: 150%;
+}
+
+.div-height {
+	height: 100%;
+}
+
+a {
+  color: #D0104C;
+}
+a:active {
+  color: #D0104C;
+}
+
+a:visited {
+  color: #D0104C;
+}
+
+a:hover {
+  color: #D0104C;
+}
+
+button {
+  outline: none;
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+input {
+  outline: none;
+  resize:none;
+  border: 1px solid #d2d5d9;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+input:focus {
+  border: 1px solid #D0104C;
+}
+
+textarea {
+  border: 1px solid #d2d5d9;
+  border-radius: 4px;
+  outline: none;
+  resize: none;
+  padding: 10px;
+}
+
+textarea:focus {
+  border: 1px solid #D0104C;
+}

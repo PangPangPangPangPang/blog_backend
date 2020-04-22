@@ -1,0 +1,30 @@
+.toast-background{
+  position: fixed;
+  display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+  bottom: 10%;
+  text-align: center;
+  margin:auto;
+  left:0;
+  right:0;
+}
+.toast-wrap{
+  opacity: 0;
+  color: #fff;
+  text-align: center;
+}
+.toast-msg{ 
+  background-color: rgba(0,0,0,0.7); 
+  padding: 5px 8px;
+  border-radius: 5px;
+}
+.toastAnimate{ animation: toastKF 2s; }
+@keyframes toastKF{
+  0% {opacity: 0;}
+  25% {opacity: 1; z-index: 9999}
+  50% {opacity: 1; z-index: 9999}
+  75% {opacity: 1; z-index: 9999}
+  100% {opacity: 0; z-index: 0}
+}
