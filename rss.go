@@ -17,7 +17,7 @@ func Rss() {
 	now := time.Now()
 	feed := &feeds.Feed{
 		Title:       "Max's Blog",
-		Link:        &feeds.Link{Href: "https://mmmmmax.cn"},
+		Link:        &feeds.Link{Href: "https://maxxxxx.life"},
 		Description: "分享一下自己乱七八糟的生活",
 		Author:      &feeds.Author{Name: "Max", Email: "im.yf.wang@gmail.com"},
 		Created:     now,
@@ -33,7 +33,7 @@ func Rss() {
 		create, _ := time.Parse("2006-01-02 15:04:05 -0700", fmt.Sprintf(`%s +0800`, item.Date))
 		feed.Items = append(feed.Items, &feeds.Item{
 			Title:       item.Title,
-			Link:        &feeds.Link{Href: fmt.Sprintf("https://mmmmmax.cn/#list/%s", item.ID)},
+			Link:        &feeds.Link{Href: fmt.Sprintf("https://maxxxxx.life/#list/%s", item.ID)},
 			Description: string(des),
 			Created:     create,
 		})
